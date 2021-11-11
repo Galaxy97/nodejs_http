@@ -8,24 +8,25 @@ const path = {
 
 console.log('make request to /posts');
 
-fetch(path.posts(), (err, res) => {
+function callback3(err, response) {
   if (err) console.error(err);
-  console.log('results were retrieved');
+  console.log('callback3 finished');
+  console.log(response);
+}
 
-  const postId = res[6].id;
-  fetch(path.post(postId), (postErr, postRes) => {
-    if (postErr) console.error(postErr);
-    console.log('post results were retrieved');
+function callback2(err, response) {
+  if (err) console.error(err);
+  console.log('callback2 finished');
+  console.log(response);
+  fetch(path.comments(3), callback3);
+}
 
-    const { userId } = postRes;
+function callback1(err, response) {
+  if (err) console.error(err);
+  console.log('callback1 finished');
+  fetch(path.post(3), callback2);
+}
 
-    fetch(path.comments(userId), (commentsErr, commentsRes) => {
-      if (commentsErr) console.error(commentsErr);
-      console.log('comments results were retrieved');
-
-      console.log(commentsRes[1]);
-    });
-  });
-});
+fetch(path.posts(), callback1);
 
 console.log('after /posts request');
